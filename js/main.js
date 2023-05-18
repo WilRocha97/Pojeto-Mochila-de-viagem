@@ -6,7 +6,7 @@ const itens = JSON.parse(localStorage.getItem("itens")) || []
 
 //para cada item na lista encontrada no localStorage
 itens.forEach( (elemento) => {
-    console.log(elemento)
+    criaElemento(elemento)
 })
 
 //captura o evento de click na tag <form> quando o botão de adicionar for clicado para capturar as informações digitadas nos campos
@@ -17,17 +17,26 @@ form.addEventListener("submit", (evento) => {
     // captura e manda os textos inseridos nos campos de nome e quantidade
     const nome = evento.target.elements["nome"]
     const quantidade = evento.target.elements["quantidade"]
+    const itemAtual = {
+        "nome": nome.value,
+        "quantidade": quantidade.value
+    }
 
     // chama a função de criar item e manda os textos inseridos nos campos de nome e quantidade como parametro
-    criaElemento(nome.value, quantidade.value)
+    criaElemento(itemAtual)
+
+    //adiciona um novo dicionario de iten na lista de itens
+    itens.push(itemAtual)
+
+    //adiciona a lista atualizada no localStorage convertendo-a em string
+    localStorage.setItem("itens", JSON.stringify(itens))
 
     // limpa os campos de nome e quantidade
     nome.value = ""
     quantidade.value = ""
 })
 
-function criaElemento(nome, quantidade) {
-    console.log(nome, quantidade)
+function criaElemento(iten) {
     // <li class="item"><strong>1</strong>Calça</li>
     // cria uma tag <li>
     const novoItem = document.createElement('li')
@@ -37,24 +46,16 @@ function criaElemento(nome, quantidade) {
     // cria uma tag <strong>
     const numeroItem = document.createElement('strong')
     // adiciona a quantidade na tag <strong>
-    numeroItem.innerHTML = quantidade
+    numeroItem.innerHTML = iten.quantidade
 
     // adiciona a tag <strong> como tag filha da tag <li>
     novoItem.appendChild(numeroItem)
     // adiciona o nome na tag <li>
-    novoItem.innerHTML += nome
+    novoItem.innerHTML += iten.nome
      
     //adiciona o novo item na lista
     lista.appendChild(novoItem)
 
 
-    const itemAtual = {
-        "nome": nome,
-        "quantidade": quantidade
-    }
-
-    itens.push(itemAtual)
-
-    //adiciona o item no localStorage
-    localStorage.setItem("itens", JSON.stringify(itens))
+    
 }
